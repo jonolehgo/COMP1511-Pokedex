@@ -45,7 +45,7 @@ Pokedex new_pokedex(void);
 // directly after the Pokemon that was added when add_pokemon was last
 // called).
 //
-// When the first Pokemon is added to the Poké?dex, the currently
+// When the first Pokemon is added to the Pokédex, the currently
 // selected Pokemon becomes this Pokemon.
 //
 // The currently selected Pokemon remains the first Pokemon that was
