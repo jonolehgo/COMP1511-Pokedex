@@ -17,7 +17,7 @@ Enter command: ?<br>
     Display details of the currently selected Pokemon<br>
   ><br>
     Move the cursor to the next Pokemon in the Pokedex<br>
-  <<br>
+  < <br>
     Move the cursor to the previous Pokemon in the Pokedex<br>
   m [pokemon_id]<br>
     Move the cursor to the Pokemon with the specified pokemon_id<br>
