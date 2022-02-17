@@ -1,11 +1,11 @@
 ## How to compile and run
-gcc -o pokedex main.c pokemon.c pokedex.c
-./pokedex
+Compile program: gcc -o pokedex main.c pokemon.c pokedex.c <br/>
+Run program: ./pokedex
 
 ## Usage
 \===========================[ Pokédex ]==========================<br>
             Welcome to the Pokédex!  How can I help?<br>
-\================================================================<br>
+\==============================================================<br>
 
 Enter command: ?<br>
   ```
@@ -41,5 +41,5 @@ Enter command: ?<br>
     Show help
    ``` 
 ## Example
-Enter command: a 1 Bulbasaur 0.7 6.9 poison grass
+Enter command: a 1 Bulbasaur 0.7 6.9 poison grass <br/>
 Added Bulbasaur to the Pokedex!
