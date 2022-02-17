@@ -8,7 +8,7 @@ gcc -o pokedex main.c pokemon.c pokedex.c
 \================================================================<br>
 
 Enter command: ?<br>
-
+  ```
   a [pokemon_id] [name] [height] [weight] [type1] [type2]
     Add a Pokemon to the Pokedex
   p
@@ -39,7 +39,7 @@ Enter command: ?<br>
     Quit
   ?
     Show help
-    
+   ``` 
 ## Example
 Enter command: a 1 Bulbasaur 0.7 6.9 poison grass
 Added Bulbasaur to the Pokedex!
