@@ -4,7 +4,7 @@ Run program: ./pokedex
 
 ## Usage
 \===========================[ Pokédex ]==========================<br>
-            Welcome to the Pokédex!  How can I help?<br>
+<pre>            Welcome to the Pokédex!  How can I help?<br> </pre>
 \============================================================<br>
 
 Enter command: ?<br>
