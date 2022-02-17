@@ -4,11 +4,11 @@ gcc -o pokedex main.c pokemon.c pokedex.c
 
 ## Usage
 \===========================[ Pokédex ]==========================<br>
-            Welcome to the Pokédex!  How can I help?
+            Welcome to the Pokédex!  How can I help?<br>
 \================================================================
 
 
-Enter command: ?
+Enter command: ?<br>
   a [pokemon_id] [name] [height] [weight] [type1] [type2]
     Add a Pokemon to the Pokedex
   p
