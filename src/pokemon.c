@@ -289,7 +289,7 @@ static void die(char *function_name, char *message) {
 #endif
 
 #ifdef HAVE_ASAN
-#include <sanitizer/asan_interface.h>
+##include <sanitizer/asan_interface.h>
 #include <stdint.h>
 #include <string.h>
 #endif

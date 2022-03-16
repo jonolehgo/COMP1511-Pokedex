@@ -83,7 +83,6 @@ Pokedex new_pokedex(void) {
     assert(new_pokedex != NULL);
     // add your own code here
     new_pokedex->head = NULL;
-  
     return new_pokedex;
 }
 
@@ -95,10 +94,9 @@ Pokedex new_pokedex(void) {
 // Fucntion: adds pokemon to pokedex
 void add_pokemon(Pokedex pokedex, Pokemon pokemon) {
    
-    struct pokedex *pokedex_pointer = pokedex;
     struct pokenode *pokenode = new_pokenode(pokemon);
     
-    add_to_end(pokedex_pointer, pokenode);
+    add_to_end(pokedex, pokenode);
 
 
 }
@@ -107,24 +105,18 @@ void add_pokemon(Pokedex pokedex, Pokemon pokemon) {
 struct pokenode *new_pokenode(Pokemon pokemon) {
 
     struct pokenode *pokenode;
-    // malloc for new pokenode added
     pokenode = malloc(sizeof(struct pokenode));
     
-    // pointers to next and previous of linked list
     pokenode->next = NULL;
     pokenode->prev = NULL;
-    
-    // pointer to evolution pokenode
     pokenode->evolve_to = NULL;
-    
-    // pokemon data id, name, height, weight, type1, type2
     pokenode->pokemon = pokemon;  
-    
-    // if pokemon has been found or not
     pokenode->pokemon_found = FALSE;
-    
-    // if pokemon is currently selected in pokedex
     pokenode->curr_pokemon_selected = FALSE;
+    
+    
+    
+    
     
     
     return pokenode;
