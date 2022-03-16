@@ -21,6 +21,10 @@
 #include <ctype.h>
 #include <string.h>
 
+// Play sounds using windows library winmm
+#include <windows.h>
+#pragma comment(lib, "winmm.dll") 
+
 #include "pokedex.h"
 
 #define MAX_LINE    1024
@@ -39,7 +43,7 @@
 #define COUNT_TOTAL_COMMAND    't'
 #define EVOLUTION_COMMAND      'e'
 #define SHOW_EVOLUTION_COMMAND 's'
-#define HELP_COMMAND           '?'
+#define HELP_COMMAND_          '?'
 #define QUIT_COMMAND           'q'
 #define NEXT_EVOLUTION_COMMAND 'n'
 #define GET_FOUND_COMMAND      'F'
@@ -74,6 +78,7 @@ static void do_search(Pokedex pokedex, char *line);
 static void do_quit(void);
 
 int main(void) {
+    PlaySound("BGM.wav", NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
     explore_pokedex(NULL);
     return 0;
 }
@@ -155,13 +160,13 @@ int run_command(Pokedex pokedex, char *line) {
         do_get_type(pokedex, &line[next]);
     } else if (cmd == QUIT_COMMAND) {
         do_quit();
-    } else if (cmd == HELP_COMMAND) {
+    } else if (cmd == HELP_COMMAND_) {
         show_help();
     } else if (cmd == '\0') {
         // Don't do anything, just print the prompt again.
     } else {
         printf("Unknown Command '%c'\n", cmd);
-        printf("Type '%c' for a list of commands\n", HELP_COMMAND);
+        printf("Type '%c' for a list of commands\n", HELP_COMMAND_);
     }
 
     return cmd != QUIT_COMMAND;
@@ -279,7 +284,7 @@ static void show_help(void) {
     printf(""
         "  %c\n"
         "    Show help\n",
-        HELP_COMMAND
+        HELP_COMMAND_
     );
     printf(""
         "================================================================\n"

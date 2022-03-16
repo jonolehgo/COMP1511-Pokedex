@@ -373,6 +373,8 @@ void print_pokemon(Pokedex pokedex) {
         }  
          
      
+    } else {
+        printf("Pokedex is empty\n");
     }
         
   
