@@ -354,78 +354,42 @@ void destroy_pokedex(Pokedex pokedex) {
 //                         Stage 3 Functions                          //
 ////////////////////////////////////////////////////////////////////////
 
-// Function: allows user to randomly discover hidden pokemon according to the 
-//           factor output, for an x amount of times, and tags them as found
+// Function: allows user to randomly discover hidden pokemon according to the
+//           seed is for random number generator 
+//           factor output (highest pokemon ID to search for by 'factor - 1' inclusive)
+//           for an x amount of times
+//           tags pokemon with generated ID as found
 void go_exploring(Pokedex pokedex, int seed, int factor, int how_many) {
-    
     struct pokenode *curr_node = pokedex->head;
-    int i = 0;
-    // call random generated number function from <time.h>
-    srand(seed);
-    
-    if (curr_node != NULL) {
-    
-        while (i < how_many) {
-        
-            int number_generated = rand() % factor;
-            
-            while (curr_node != NULL) {
-                
-                int pokemonId = pokemon_id(curr_node->pokemon);
-                
-                if (number_generated == pokemonId) {
-                    
-                    curr_node->pokemon_found = TRUE;
-                    
-                }
-                
-                curr_node = curr_node->next;
-                
-            }
-            
-            curr_node = pokedex->head;
-            i++;
-        
-        }
-        
-    } else {
-        
-        printf("There are no pokemon in your pokedex!\n");
-        
-        // freeing memory asscoiated with pokedex.
-        destroy_pokedex(pokedex);
-        
-        exit(1);
-        
+    if (curr_node == NULL) {
+        printf("Pokedex is empty\n");
+        return;
     }
-    
-    
-    
+    srand(seed);
+    int i = 0;
+    while (i < how_many) {
+        int number_generated = rand() % factor;
+        while (curr_node != NULL) {
+            int pokemonId = pokemon_id(curr_node->pokemon);
+            if (number_generated == pokemonId) {
+                curr_node->pokemon_found = TRUE;
+            }
+            curr_node = curr_node->next;
+        }
+        curr_node = pokedex->head;
+        i++;
+    }
 }
 
 // Function: return the total amount of pokemon in pokedex
 int count_total_pokemon(Pokedex pokedex) {
     struct pokenode *curr_node = pokedex->head;
-    
     int total_pokemon_count = 0;
-    
     while (curr_node != NULL) {
-        
-        int pokemonId = pokemon_id(curr_node->pokemon);
-           
-        if (pokemonId > 0) {
-        
-            total_pokemon_count++;
-        
-        }
+        total_pokemon_count++;
         curr_node = curr_node->next;
-        
     }
-    
     return total_pokemon_count;
-    
-
-
 }
 
 ////////////////////////////////////////////////////////////////////////
