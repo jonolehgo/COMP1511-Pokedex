@@ -40,6 +40,7 @@
 
 struct pokedex {
     struct pokenode *head;
+    struct pokenode *tail;
 
 };
 
@@ -62,6 +63,8 @@ struct pokenode {
 
 // Add any other structs you define here.
 struct pokenode *new_pokenode(Pokemon pokemon);
+// Return the pokenode with currently selected pokemon.
+struct pokenode *get_current_pokenode(Pokedex pokedex);
 
 
 // Add prototypes for any extra functions you create here.
@@ -83,6 +86,7 @@ Pokedex new_pokedex(void) {
     assert(new_pokedex != NULL);
     // add your own code here
     new_pokedex->head = NULL;
+    new_pokedex->tail = NULL;
     return new_pokedex;
 }
 
@@ -95,45 +99,65 @@ Pokedex new_pokedex(void) {
 void add_pokemon(Pokedex pokedex, Pokemon pokemon) {
     struct pokenode *pokenode = new_pokenode(pokemon);
     add_to_end(pokedex, pokenode);
-
 }
 
 // Function: create and malloc node for new pokemon
 struct pokenode *new_pokenode(Pokemon pokemon) {
     struct pokenode *pokenode;
     pokenode = malloc(sizeof(struct pokenode));
-    
     pokenode->next = NULL;
     pokenode->prev = NULL;
     pokenode->evolve_to = NULL;
     pokenode->pokemon = pokemon;  
     pokenode->pokemon_found = FALSE;
     pokenode->curr_pokemon_selected = FALSE;
-    
     return pokenode;
 }
 
 // Function: adds pokemon node to end of pokedex list
 void add_to_end(Pokedex pokedex, struct pokenode *node) {  
     struct pokenode *curr_node = pokedex->head;
-    
     // if there are no pokemon, then pokenode added will become the new head
     if (pokedex->head == NULL) {
-    
         pokedex->head = node;
+        pokedex->tail = node;
         node->curr_pokemon_selected = TRUE;
-        
-    // add pokenode to end of list
+    
+    // if there is only one pokemon, assign new nodes prev to pokedex head
+    } else if (curr_node == pokedex->tail) {
+      node->prev = curr_node;
+      curr_node->next = node;
+      pokedex->tail = node;
+    
+    // find last pokemon and add pokenode to end of list
     } else {
-        
         while (curr_node->next != NULL) {
             curr_node = curr_node->next;
         }
-        curr_node->next = node;    
+        node->prev = curr_node;
+        curr_node->next = node;
+        pokedex->tail = node;
     }           
 }
 
- // Function: returns the selected pokemon
+// Function: returns the pokenode with the current selected pokemon
+struct pokenode *get_current_pokenode(Pokedex pokedex) {
+    struct pokenode *curr_node = pokedex->head;
+    // if there are no pokemon in the pokedex
+    if (curr_node == NULL) {
+        return NULL;
+    }        
+    // find the selected pokemon node
+    while (curr_node != NULL) {
+        if (curr_node->curr_pokemon_selected == TRUE) {
+            return curr_node;
+        } else {
+            curr_node = curr_node->next;
+        }
+    }  
+}
+
+// Function: returns the selected pokemon
 Pokemon get_current_pokemon(Pokedex pokedex) {
     struct pokenode *curr_node = pokedex->head;
     if (curr_node == NULL) {
@@ -151,23 +175,12 @@ Pokemon get_current_pokemon(Pokedex pokedex) {
 
 // Function: prints out pokemon details of the selected pokemon        
 void detail_pokemon(Pokedex pokedex) {
-    struct pokenode *curr_node = pokedex->head;
-    
     // if there are no pokemon in the pokedex
-    if (curr_node == NULL) {
+    if (pokedex->head == NULL) {
         printf("Pokedex is empty\n");
         return;
     }
-            
-    // find the selected pokemon node
-    while (curr_node != NULL) {
-        if (curr_node->curr_pokemon_selected == TRUE) {
-            break; 
-        } else {
-            curr_node = curr_node->next;
-        }
-    }
-
+    struct pokenode *curr_node = get_current_pokenode(pokedex);
     // pokemon details    
     int pokemonId = pokemon_id(curr_node->pokemon);
     char *pokemonName = pokemon_name(curr_node->pokemon);
@@ -178,14 +191,12 @@ void detail_pokemon(Pokedex pokedex) {
     pokemon_type pokemon_Type_2 = pokemon_second_type(curr_node->pokemon);
     const char *pokemonType2 = pokemon_type_to_string(pokemon_Type_2);    
         
-    // if selected pokemon has been 'found'
+    // if selected pokemon has been 'found' print details
     if (curr_node->pokemon_found == TRUE) {
-    
         printf("Id: %03d\n", pokemonId);
         printf("Name: %s\n", pokemonName);
         printf("Height: %.1lfm\n", pokemonHeight);
         printf("Weight: %.1lfkg\n", pokemonWeight);
-        
         // pokemon has two types
         if (type_is_none(pokemonType2) == FALSE) {
             printf("Type: %s %s\n", pokemonType1, pokemonType2);
@@ -194,9 +205,8 @@ void detail_pokemon(Pokedex pokedex) {
             printf("Type: %s \n", pokemonType1);
         }
     
-    // if selected pokemon has not been 'found'    
+    // if selected pokemon has not been 'found' print hidden details version 
     } else {
-        
         printf("Id: %03d\n", pokemonId);
         printf("Name: ");
         hidden_pokemon_name(pokemonName); // this function will replace the pokemon's name with '*''s
@@ -204,26 +214,16 @@ void detail_pokemon(Pokedex pokedex) {
         printf("Height: --\n");
         printf("Weight: --\n");
         printf("Type: --\n");
-        
     } 
 }
 
 // Function: tags current pokemon as 'found' allowing for details to be revealed
 void find_current_pokemon(Pokedex pokedex) {
-    
-    struct pokenode *curr_node = pokedex->head;
-    if (curr_node == NULL) {
+    if (pokedex->head == NULL) {
         printf("Pokedex is empty\n");
-    
     } else {
-        while (curr_node != NULL) {
-            if (curr_node->curr_pokemon_selected == TRUE) {
-                curr_node->pokemon_found = TRUE;
-                return; 
-            } else {
-                curr_node = curr_node->next;
-            }
-        }             
+        struct pokenode *curr_node = get_current_pokenode(pokedex);
+        curr_node->pokemon_found = TRUE;
     }
 }
     
@@ -269,232 +269,84 @@ void print_pokemon(Pokedex pokedex) {
 
 // Function: makes next pokemon on the list the currently selected pokemon
 void next_pokemon(Pokedex pokedex) {
-
-    struct pokenode *curr_node = pokedex->head; 
-    
-    // loops from list to find selected pokemon/////////////////////////////////   
-    while (curr_node != NULL) {
-    
-        // if pokenode is not current pokemon selected and not at then end of  
-        // then continue iterating through list
-        if (curr_node->curr_pokemon_selected == FALSE && 
-        curr_node->next != NULL) {
-            
-            if (curr_node->next != NULL) {
-                curr_node = curr_node->next;
-                
-            } else {
-            
-                break;
-            
-            }
-            
-        } else { 
-        
-            if (curr_node->next != NULL) {
-                
-                // move current selected pokemon to next pokemon on list   
-                curr_node->curr_pokemon_selected = FALSE;
-                curr_node->next->curr_pokemon_selected = TRUE;
-                
-                break;
-            
-            } else {
-            
-                break;
-            
-            }
-            
-        }
-        
-    }    
-    
-    
-    
+    struct pokenode *curr_node = get_current_pokenode(pokedex);
+    if (curr_node->next != NULL) {
+        curr_node->curr_pokemon_selected = FALSE;
+        curr_node->next->curr_pokemon_selected = TRUE;
+    }
 }
 
-// Function : makes previous pokemon on the list the current selected pokemon
+// Function : makes previous pokemon on the list the currently selected pokemon
 void prev_pokemon(Pokedex pokedex) {
-
-    struct pokenode *curr_node = pokedex->head;   
-    struct pokenode *temp;
-     
-    while (curr_node != NULL) {
-    
-        if (curr_node->curr_pokemon_selected == FALSE) {
-           
-            temp = curr_node;
-            curr_node = curr_node->next;
-            curr_node->prev = temp;
-        
-        } else { 
-        
-            if (curr_node->prev != NULL) {
-            
-                curr_node->curr_pokemon_selected = FALSE;
-                curr_node->prev->curr_pokemon_selected = TRUE;
-                break;
-                
-            } else {
-            
-                break;
-                
-            }
-            
-        }
-        
-    }    
-  
-  
-    
+    struct pokenode *curr_node = get_current_pokenode(pokedex);
+    if (curr_node->prev != NULL) {
+        curr_node->curr_pokemon_selected = FALSE;
+        curr_node->prev->curr_pokemon_selected = TRUE;
+    }
 }
 
 // Function: takes input as pokemon id and makes that pokemon current selected
 //           pokemon
 void change_current_pokemon(Pokedex pokedex, int id) {
-    
-    struct pokenode *curr_node = pokedex->head; 
-    
+    struct pokenode *curr_node = pokedex->head;
+    struct pokenode *prev_pokemon_selected = get_current_pokenode(pokedex);    
     while (curr_node != NULL) {
-     
-        int pokemonId = pokemon_id(curr_node->pokemon);
-    
-        if (curr_node->curr_pokemon_selected == TRUE) {
-        
-            curr_node->curr_pokemon_selected = FALSE;
-            
-        }
-      
+        int pokemonId = pokemon_id(curr_node->pokemon);  
         if (pokemonId == id) {
-        
+            // swap states if pokemon id exists
             curr_node->curr_pokemon_selected = TRUE;
-            
+            prev_pokemon_selected->curr_pokemon_selected = FALSE;
         }
-        
         curr_node = curr_node->next;
-              
     }
-   
-        
-   
 }
     
 // Function: removes current selected pokemon from list
 void remove_pokemon(Pokedex pokedex) {
+    struct pokenode *curr_node = get_current_pokenode(pokedex);  
+    struct pokenode *curr_node_prev = curr_node->prev;
+    struct pokenode *curr_node_next = curr_node->next;
 
-    struct pokenode *curr_node = pokedex->head;  
-    struct pokenode *temp = pokedex->head;
-   
     // checks and removes elvolve_to data for any pokemon which evolves to 
     // current pokemon that will be deleted  
-    int curr_id = curr_pokemon_id(pokedex); 
-    remove_evolve_to(pokedex, curr_node, curr_id);
+    // int curr_id = curr_pokemon_id(pokedex); 
+    // remove_evolve_to(pokedex, curr_node, curr_id);
     
-                    
-    while (curr_node != NULL) {
-            
-        // if deleting first pokenode
-        if (curr_node->curr_pokemon_selected == TRUE && curr_node->next != NULL) {
-            
-            // next pokemon on list becomes current pokemon selected    
-            curr_node->next->curr_pokemon_selected = TRUE;
-            
-            // steps to remove pokenode 
-               
-            temp = curr_node->next;
-            pokedex->head = temp;
-            // function below removes pokemon data in pokenode
-            destroy_pokemon(curr_node->pokemon); 
-            free(curr_node);
-            
-            // loop not needed anymore as pokemon found and deleted
-            break;
-            
-        }
-            
-        // if deleting last and only pokenode /////////////////////////////////
-        
-        if (curr_node->curr_pokemon_selected == TRUE && 
-            curr_node->next == NULL) {
-        
-            // steps to remove pokenode
-            
-            // function below frees pokemon data in pokenode
-            destroy_pokemon(curr_node->pokemon);     
-            free(curr_node);
-            pokedex->head = NULL;
-            
-            // loop not needed anymore as pokemon found and deleted
-            break;
-
-        }
-            
-           
-        // if deleting any pokenode besides first //////////////////////////////
-        
-        // loops until finds the pokenode before the current pokenode
-        if (curr_node->next->curr_pokemon_selected == TRUE) {
-
-            // steps to remove pokenode
-               
-            // creating a temp to store current pokenode
-            temp = curr_node->next;
-            // linking current pokenode to pokenode after deleted
-            curr_node->next = temp->next;
-            // function below frees pokemon data in pokenode
-            destroy_pokemon(temp->pokemon); 
-            // freeing deleted pokenode
-            free(temp);
-                
-            // if the deleted pokenode is the not the last pokenode then the 
-            // pokenode afterwards will be the current pokemon, otherwise if the 
-            // deleted pokenode is last then the pokenode before it will be the 
-            // current
-            if (curr_node->next != NULL) {
-             
-                curr_node->next->curr_pokemon_selected = TRUE;
-                       
-            } else { 
-       
-                curr_node->curr_pokemon_selected = TRUE;
-                
-            }
-            
-            
-            // loop not needed anymore as pokemon found and deleted    
-            break;
-                
-        }
-           
-        curr_node = curr_node->next;           
-      
-            
-    } 
-  
-       
-   
+    // if deleting the only pokemon in pokedex
+    if (curr_node == pokedex->head && curr_node == pokedex->tail) {
+        pokedex->head = NULL;
+        pokedex->tail = NULL;
+    // if deleting first pokemon in pokedex
+    } else if (curr_node == pokedex->head && curr_node != pokedex->tail) {
+        pokedex->head = curr_node_next;
+        curr_node_next->prev = NULL;
+        curr_node_next->curr_pokemon_selected = TRUE;
+    // if deleting last pokemon in pokedex
+    } else if (curr_node == pokedex->tail) {
+        pokedex->tail = curr_node_prev;
+        curr_node_prev->curr_pokemon_selected = TRUE;
+        curr_node_prev->next = NULL;
+    // if deleting within middle of list
+    } else if (curr_node != pokedex->head && curr_node != pokedex->tail) {
+        curr_node_prev->next = curr_node_next;
+        curr_node_next->prev = curr_node_prev;
+        curr_node_next->curr_pokemon_selected = TRUE;
+    }
+        destroy_pokemon(curr_node->pokemon);
+        free(curr_node);   
 }
 
 // Function: destroys pokedex and all pokenodes/pokemon within that pokedex.
 void destroy_pokedex(Pokedex pokedex) {
-    
     struct pokenode *curr_node = pokedex->head;
-    struct pokenode *store = pokedex->head;
-    
-    
-    while (curr_node != NULL) {
-            
+    struct pokenode *store;
+    while (curr_node != NULL) {    
         destroy_pokemon(curr_node->pokemon);            
         store = curr_node->next;
         free(curr_node);
-        curr_node = store;
-            
+        curr_node = store;        
     }
-            
-   
     free(pokedex);
-    
-
 }
 
 
