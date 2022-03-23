@@ -1,5 +1,5 @@
 ## How to compile and run
-Compile program: gcc -o pokedex main.c pokemon.c pokedex.c <br/>
+Compile program: gcc -o pokedex main.c pokemon.c pokedex.c -l winmm <br/>
 Run program: ./pokedex
 
 ## Usage
