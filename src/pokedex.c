@@ -396,300 +396,86 @@ int count_total_pokemon(Pokedex pokedex) {
 //                         Stage 4 Functions                          //
 ////////////////////////////////////////////////////////////////////////
 
-// Function: allows user to input evolution data from pokemon id too another
-//           pokemon id
+// Function: allows user to input evolution data with from id and to id
 void add_pokemon_evolution(Pokedex pokedex, int from_id, int to_id) {
-    
     struct pokenode *curr_node = pokedex->head;
-    struct pokenode *temp_from = pokedex->head;
-    struct pokenode *temp_to = pokedex->head;
-    
+    struct pokenode *evolve_from;
+    struct pokenode *evolve_to;
+    if (curr_node == NULL) {
+        printf("Pokedex is empty\n");
+        return;
+    }
     while (curr_node != NULL) {
-    
         int pokemonId = pokemon_id(curr_node->pokemon);
-        
         if (pokemonId == from_id) {
-        
-            temp_from = curr_node;
-             
+            evolve_from = curr_node;     
         }
-        
         if (pokemonId == to_id) {
-        
-            temp_to = curr_node;
-            
-            break;
-            
+            evolve_to = curr_node;
         }
-        
         curr_node = curr_node->next;
-        
     }
-    
-    
-    if (temp_from != NULL && temp_to != NULL) {
-    
-        temp_from->evolve_to = curr_node;
-        
-   
-    }
-    
-    
-    
+    if (evolve_from != NULL && evolve_to != NULL) {
+        evolve_from->evolve_to = evolve_to;
+    }   
 }
 
 // Function: Prints out the pokemons evolution chain
 void show_evolutions(Pokedex pokedex) {
-    
     struct pokenode *curr_node = pokedex->head;
-    
-    if (curr_node != NULL) {  
-             
-        while (curr_node != NULL) {
-           
-            if (curr_node->curr_pokemon_selected == TRUE) {
-                
-                if (curr_node->evolve_to != NULL) {
-                    
-                    // pokemon 1 data field ////////////////////////////////////
-                    int pokemonId = pokemon_id(curr_node->pokemon);
-                    char *pokemonName = pokemon_name(curr_node->pokemon);
-                    pokemon_type pokemon_Type_1 = pokemon_first_type
-                                                (curr_node->pokemon);
-                    const char *pokemonType1 =  pokemon_type_to_string
-                                                (pokemon_Type_1);
-                    pokemon_type pokemon_Type_2 = pokemon_second_type
-                                                (curr_node->pokemon);
-                    const char *pokemonType2 = pokemon_type_to_string
-                                                (pokemon_Type_2);   
-                    ////////////////////////////////////////////////////////////
-                    
-                    // pokemon 2 data field ////////////////////////////////////
-                    int pokemonId2 = pokemon_id(curr_node->evolve_to->pokemon);
-                    char *pokemonName2 = pokemon_name
-                                        (curr_node->evolve_to->pokemon);
-                    pokemon_type pokemon_Type_3 = pokemon_first_type
-                                        (curr_node->evolve_to->pokemon);
-                    const char *pokemonType3 =  pokemon_type_to_string
-                                        (pokemon_Type_3);
-                    pokemon_type pokemon_Type_4 = pokemon_second_type
-                                        (curr_node->evolve_to->pokemon);
-                    const char *pokemonType4 = pokemon_type_to_string
-                                        (pokemon_Type_4);    
-                    ////////////////////////////////////////////////////////////
-                
-                    // pokemon 1 
-                    if (curr_node->pokemon_found == TRUE) {
-                    
-                        printf("#%03d %s ", pokemonId, pokemonName);
-                        
-                        // if pokemon has two types, print both types   
-                        if (type_is_none(pokemonType2) == FALSE) {
-            
-                            printf("[%s %s] ", pokemonType1, pokemonType2);
-                
-                        } else {
-            
-                            printf("[%s] ", pokemonType1);
-                
-                        }
-    
-                                               
-                    } else {
-                    
-                        printf("#%03d ???? [????] ", pokemonId);
-                        
-                        
-                    }
-                    
-                    printf("--> ");
-                    
-                    // pokemon 2
-                    if (curr_node->evolve_to->pokemon_found == TRUE) {
-        
-                        printf("#%03d %s ", pokemonId2, pokemonName2);
-                        
-                        // if pokemon has two types, print both types
-                        if (type_is_none(pokemonType4) == FALSE) {
-            
-                            printf("[%s %s] ", pokemonType3, pokemonType4);
-                
-                        } else {
-            
-                            printf("[%s] ", pokemonType3);
-                
-                        }
-                        
-                    } else {
-                    
-                        printf("#%03d ???? [????] ", pokemonId2);
-                        
-                        
-                    }
-                    
-                    
-                    // pokemon 3
-                    // pokemon 3 data field ////////////////////////////////////
-                    if (curr_node->evolve_to->evolve_to != NULL) {
-                        int pokemonId3 = pokemon_id
-                                    (curr_node->evolve_to->evolve_to->pokemon);
-                        char *pokemonName3 = pokemon_name
-                                    (curr_node->evolve_to->evolve_to->pokemon);
-                        pokemon_type pokemon_Type_5 = pokemon_first_type
-                                    (curr_node->evolve_to->evolve_to->pokemon);
-                        const char *pokemonType5 =  pokemon_type_to_string
-                                    (pokemon_Type_5);
-                        pokemon_type pokemon_Type_6 = pokemon_second_type
-                                    (curr_node->evolve_to->evolve_to->pokemon);
-                        const char *pokemonType6 = pokemon_type_to_string
-                                    (pokemon_Type_6);    
-                    ////////////////////////////////////////////////////////////
-                        
-                        printf("--> ");    
-                        
-                        if (curr_node->evolve_to->evolve_to->
-                                                        pokemon_found == TRUE) {
-            
-                            printf("#%03d %s ", pokemonId3, pokemonName3);
-                           
-                            // if pokemon has two types, print both types
-                            if (type_is_none(pokemonType6) == FALSE) {
-                
-                                printf("[%s %s] ", pokemonType5, pokemonType6);
-                    
-                            } else {
-                
-                                printf("[%s] ", pokemonType5);
-                    
-                            }
-                            
-                        } else {
-                        
-                            printf("#%03d ???? [????] ", pokemonId3);
-                            
-                            
-                        }
-                    
-                    }
-                    
-                    // new line for end of pokemon evolution chain for either
-                    // two pokemon or threw pokemon
-                    printf("\n");
-                    
-                    
-                    break;
-                    
-                // if pokemon does not evolve to another pokemon id and name
-                } else {
-                    
-                    // current pokemon data field //////////////////////////////
-                    int pokemonId = pokemon_id(curr_node->pokemon);
-                    char *pokemonName = pokemon_name(curr_node->pokemon);
-                    pokemon_type pokemon_Type_1 = pokemon_first_type
-                                                (curr_node->pokemon);
-                    const char *pokemonType1 =  pokemon_type_to_string
-                                                (pokemon_Type_1);
-                    pokemon_type pokemon_Type_2 = pokemon_second_type
-                                                (curr_node->pokemon);
-                    const char *pokemonType2 = pokemon_type_to_string
-                                                (pokemon_Type_2);   
-                    ////////////////////////////////////////////////////////////
-                    
-                    // current pokemon
-                    if (curr_node->pokemon_found == TRUE) {
-                    
-                        printf("#%03d %s ", pokemonId, pokemonName);
-                        
-                        // if pokemon has two types, print both types   
-                        if (type_is_none(pokemonType2) == FALSE) {
-            
-                            printf("[%s %s] ", pokemonType1, pokemonType2);
-                
-                        } else {
-            
-                            printf("[%s] ", pokemonType1);
-                
-                        }
-    
-                                               
-                    } else {
-                    
-                        printf("#%03d ???? [????] ", pokemonId);
-                        
-                        
-                    }
-                    
-                    printf("\n");
-                    
-                    // printf("this pokemon does not evolve\n"); - test
-                    
-                    break;
-                    
-                }
-                
-                
-            }
-        
-            curr_node = curr_node->next;
-        
-        }
-    
-    // if there are no pokemon in pokedex exit program    
-    } else {
-    
-        printf("No pokemon in your pokedex!");
-        exit(1);
-        
+    if (curr_node == NULL) {
+        printf("Pokedex is empty\n");
+        return;
     }
- 
- 
- 
+    curr_node = get_current_pokenode(pokedex);
+    if (curr_node->evolve_to != NULL) {
+        while (curr_node != NULL) {
+            int pokemonId = pokemon_id(curr_node->pokemon);
+            char *pokemonName = pokemon_name(curr_node->pokemon);
+            pokemon_type pokemon_Type_1 = pokemon_first_type(curr_node->pokemon);
+            const char *pokemonType1 =  pokemon_type_to_string(pokemon_Type_1);
+            pokemon_type pokemon_Type_2 = pokemon_second_type(curr_node->pokemon);
+            const char *pokemonType2 = pokemon_type_to_string(pokemon_Type_2);
+            
+            if (curr_node->pokemon_found == TRUE) {
+                printf("#%03d %s ", pokemonId, pokemonName);            
+                // if pokemon has two types, print both types   
+                if (type_is_none(pokemonType2) == FALSE) {
+                    printf("[%s %s] ", pokemonType1, pokemonType2);
+                } else {
+                    printf("[%s] ", pokemonType1);
+                }
+            } else {
+                printf("#%03d ???? [????] ", pokemonId);
+            }
+            // if pokemon has an evolution to then print '-->'
+            if (curr_node->evolve_to != NULL) {
+                printf("--> ");
+            // if not more evolutions on chain print new line    
+            } else {
+                printf("\n");
+            }
+            curr_node = curr_node->evolve_to;
+        }
+    }
 }
 
 // Function: prints the evolution pokemon if current pokemon does evolve
 int get_next_evolution(Pokedex pokedex) {
-
     struct pokenode *curr_node = pokedex->head;
-    
-    // if there is at least one pokemon in the pokedex
-    if (curr_node != NULL) {
-            
-        // loops from list to find selected pokemon/////////////////////////////
-        while (curr_node != NULL) {
-            
-            if (curr_node->curr_pokemon_selected == TRUE) {
-                
-                break; 
-            
-            } else {
-            
-                curr_node = curr_node->next;
-                
-            }
-            
-        }
-        
-    }
-    
+    if (curr_node == NULL) {
+        printf("Pokedex is empty\n");
+        exit(1);
+    }    
+    curr_node = get_current_pokenode(pokedex);
     // if current pokemon evolves to something return the evolutions id
     if (curr_node->evolve_to != NULL) {
-        
-        // function below returns finds ppokemon id 
-        int evolve_id = pokemon_id(curr_node->evolve_to->pokemon);
-        
-        return evolve_id;
-    
-    // else return does not evolve     
-    } else {
-    
+        int evolve_to_id = pokemon_id(curr_node->evolve_to->pokemon);
+        return evolve_to_id;
+    } else {    
         return DOES_NOT_EVOLVE;
-        
     }
-    
-    
-       
 }
-
 
 ////////////////////////////////////////////////////////////////////////
 //                         Stage 5 Functions                          //
