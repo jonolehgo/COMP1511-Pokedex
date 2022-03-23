@@ -364,7 +364,7 @@ static void do_get(Pokedex pokedex) {
         printf("Currently selected Pokemon: #%d (%s)\n",
             pokemon_id(current), pokemon_name(current));
     } else {
-        printf("No current Pokemon\n");
+        printf("Pokedex is empty\n");
     }
 }
 

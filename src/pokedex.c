@@ -91,19 +91,15 @@ Pokedex new_pokedex(void) {
 //                         Stage 1 Functions                          //
 ////////////////////////////////////////////////////////////////////////
 
-// Fucntion: adds pokemon to pokedex
+// Fucntion: adds a pokemon to pokedex
 void add_pokemon(Pokedex pokedex, Pokemon pokemon) {
-   
     struct pokenode *pokenode = new_pokenode(pokemon);
-    
     add_to_end(pokedex, pokenode);
-
 
 }
 
 // Function: create and malloc node for new pokemon
 struct pokenode *new_pokenode(Pokemon pokemon) {
-
     struct pokenode *pokenode;
     pokenode = malloc(sizeof(struct pokenode));
     
@@ -114,20 +110,11 @@ struct pokenode *new_pokenode(Pokemon pokemon) {
     pokenode->pokemon_found = FALSE;
     pokenode->curr_pokemon_selected = FALSE;
     
-    
-    
-    
-    
-    
     return pokenode;
-
-
-
 }
 
 // Function: adds pokemon node to end of pokedex list
-void add_to_end(Pokedex pokedex, struct pokenode *node) {
-   
+void add_to_end(Pokedex pokedex, struct pokenode *node) {  
     struct pokenode *curr_node = pokedex->head;
     
     // if there are no pokemon, then pokenode added will become the new head
@@ -140,239 +127,141 @@ void add_to_end(Pokedex pokedex, struct pokenode *node) {
     } else {
         
         while (curr_node->next != NULL) {
-        
             curr_node = curr_node->next;
-            
         }
-        
         curr_node->next = node;    
-        
-    }        
-                         
-                         
-                         
-}
-            
-// Function: prints out pokemon detail - id, name, height, weight, type1, type2           
-void detail_pokemon(Pokedex pokedex) {
-    
-    struct pokenode *curr_node = pokedex->head;
-    
-    // if there is at least one pokemon in the pokedex
-    if (curr_node != NULL) {
-            
-        // loops from list to find selected pokemon/////////////////////////////
-        while (curr_node != NULL) {
-            
-            if (curr_node->curr_pokemon_selected == TRUE) {
-                
-                break; 
-            
-            } else {
-            
-                curr_node = curr_node->next;
-                
-            }
-            
-        }
-        
-        // pokemon detail variables ////////////////////////////////////////////
-        // id, name, height, weight
-        int pokemonId = pokemon_id(curr_node->pokemon);
-        char *pokemonName = pokemon_name(curr_node->pokemon);
-        double pokemonHeight = pokemon_height(curr_node->pokemon);
-        double pokemonWeight = pokemon_weight(curr_node->pokemon);
-        // type 1
-        pokemon_type pokemon_Type_1 = pokemon_first_type(curr_node->pokemon);
-        const char *pokemonType1 =  pokemon_type_to_string(pokemon_Type_1);
-        // type 2
-        pokemon_type pokemon_Type_2 = pokemon_second_type(curr_node->pokemon);
-        const char *pokemonType2 = pokemon_type_to_string(pokemon_Type_2);    
-        ////////////////////////////////////////////////////////////////////////
-        
-        // if selected pokemon has been found
-        if (curr_node->pokemon_found == TRUE) {
-        
-            printf("Id: %03d\n", pokemonId);
-            printf("Name: %s\n", pokemonName);
-            printf("Height: %.1lfm\n", pokemonHeight);
-            printf("Weight: %.1lfkg\n", pokemonWeight);
-            
-            // if pokemon has two types
-            if (type_is_none(pokemonType2) == FALSE) {
-            
-                printf("Type: %s %s\n", pokemonType1, pokemonType2);
-            
-            // if pokemon has only one type   
-            } else {
-                
-                printf("Type: %s \n", pokemonType1);
-                
-            }
-        
-        // if selected pokemon has not been found    
-        } else {
-            
-            printf("Id: %03d\n", pokemonId);
-            printf("Name: ");
-            // prints character name in '*'
-            hidden_pokemon_name(pokemonName);
-            printf("\n");          
-            printf("Height: --\n");
-            printf("Weight: --\n");
-            printf("Type: --\n");
-         
-        } 
-    
-    // if there is no pokemon in the pokedex
-    } else {
-    
-        printf("Pokedex is empty\n");
-        
-    }
-
-
-
+    }           
 }
 
-// Function: gets current pokemon
+ // Function: returns the selected pokemon
 Pokemon get_current_pokemon(Pokedex pokedex) {
-   
     struct pokenode *curr_node = pokedex->head;
-    
-    // if there is at least one pokemon in the pokedex
-    if (curr_node != NULL) {
-    
+    if (curr_node == NULL) {
+        return NULL;
+    } else {
         while (curr_node != NULL) {
-            
             if (curr_node->curr_pokemon_selected == TRUE) {
-            
                 return curr_node->pokemon;
-                
-            }      
-            
-            if (curr_node->next != NULL) {
-            
-                curr_node = curr_node->next;    
-                
             } else {
-            
-                return NULL;
-                
+                curr_node = curr_node->next;
             }
         }
-            
-    
-    } else { 
-    
-        return NULL;
-        
-    }
-    
-    return NULL;
- 
- 
- 
-    
+    }   
 }
 
-// Function: tags current pokemon as found allowing for details to be revealed
+// Function: prints out pokemon details of the selected pokemon        
+void detail_pokemon(Pokedex pokedex) {
+    struct pokenode *curr_node = pokedex->head;
+    
+    // if there are no pokemon in the pokedex
+    if (curr_node == NULL) {
+        printf("Pokedex is empty\n");
+        return;
+    }
+            
+    // find the selected pokemon node
+    while (curr_node != NULL) {
+        if (curr_node->curr_pokemon_selected == TRUE) {
+            break; 
+        } else {
+            curr_node = curr_node->next;
+        }
+    }
+
+    // pokemon details    
+    int pokemonId = pokemon_id(curr_node->pokemon);
+    char *pokemonName = pokemon_name(curr_node->pokemon);
+    double pokemonHeight = pokemon_height(curr_node->pokemon);
+    double pokemonWeight = pokemon_weight(curr_node->pokemon);
+    pokemon_type pokemon_Type_1 = pokemon_first_type(curr_node->pokemon);
+    const char *pokemonType1 =  pokemon_type_to_string(pokemon_Type_1);
+    pokemon_type pokemon_Type_2 = pokemon_second_type(curr_node->pokemon);
+    const char *pokemonType2 = pokemon_type_to_string(pokemon_Type_2);    
+        
+    // if selected pokemon has been 'found'
+    if (curr_node->pokemon_found == TRUE) {
+    
+        printf("Id: %03d\n", pokemonId);
+        printf("Name: %s\n", pokemonName);
+        printf("Height: %.1lfm\n", pokemonHeight);
+        printf("Weight: %.1lfkg\n", pokemonWeight);
+        
+        // pokemon has two types
+        if (type_is_none(pokemonType2) == FALSE) {
+            printf("Type: %s %s\n", pokemonType1, pokemonType2);
+        // pokemon has only one type   
+        } else {
+            printf("Type: %s \n", pokemonType1);
+        }
+    
+    // if selected pokemon has not been 'found'    
+    } else {
+        
+        printf("Id: %03d\n", pokemonId);
+        printf("Name: ");
+        hidden_pokemon_name(pokemonName); // this function will replace the pokemon's name with '*''s
+        printf("\n");          
+        printf("Height: --\n");
+        printf("Weight: --\n");
+        printf("Type: --\n");
+        
+    } 
+}
+
+// Function: tags current pokemon as 'found' allowing for details to be revealed
 void find_current_pokemon(Pokedex pokedex) {
     
     struct pokenode *curr_node = pokedex->head;
+    if (curr_node == NULL) {
+        printf("Pokedex is empty\n");
     
-    // if there is at least one pokemon in the pokedex
-    if (curr_node != NULL) {
-    
-        // loops from list to find selected pokemon/////////////////////////////
+    } else {
         while (curr_node != NULL) {
-        
             if (curr_node->curr_pokemon_selected == TRUE) {
-            
-                break; 
-                
+                curr_node->pokemon_found = TRUE;
+                return; 
             } else {
-            
                 curr_node = curr_node->next;
-   
             }
-            
-        }
-        
-        // sets pokemon found condition to be true    
-        curr_node->pokemon_found = TRUE;
-       
+        }             
     }
-    
-    
-    
 }
     
-// print all pokemon in the list
+// Function: prints all of the pokemon
 void print_pokemon(Pokedex pokedex) {
-
     struct pokenode *curr_node = pokedex->head;
-    
-    // if there is at least one pokemon in the pokedex    
-    if (curr_node != NULL) {  
-          
-        // loops from begininning of list to end of list////////////////////////
-        while (curr_node != NULL) {
-            
-            int pokemonId = pokemon_id(curr_node->pokemon);
-            char *pokemonName = pokemon_name(curr_node->pokemon);
-            
-            // print an arrow for selected pokemon
-            if (curr_node->curr_pokemon_selected == TRUE) {
-            
-                printf("--> ");
-                
-            } else {
-            
-                printf("    ");
-            }
-            
-            // print pokemon details if pokemon is found
-            if (curr_node->pokemon_found == TRUE) {
-            
-                printf("#%03d: %s", pokemonId, pokemonName); 
-            
-            // print hidden pokemon name        
-            } else {
-                
-                printf("#%03d: ", pokemonId);
-                // print pokemon name in '*'
-                hidden_pokemon_name(pokemonName);
-                
-                    
-            }
-            
-            printf("\n");
-            
-            // if next pokenode is not the end of the list keep going
-            if (curr_node->next != NULL) {
-            
-                curr_node = curr_node->next;
-            
-            // otherwise exit loop    
-            } else {
-            
-                break;
-                
-            }    
-            
-         
-        }  
-         
-     
-    } else {
+    // pokedex is empty
+    if (curr_node == NULL) {  
         printf("Pokedex is empty\n");
-    }
-        
-  
-    
+        return;
+    }    
+    // iterate through pokedex      
+    while (curr_node != NULL) {
+        int pokemonId = pokemon_id(curr_node->pokemon);
+        char *pokemonName = pokemon_name(curr_node->pokemon);
+        // print an arrow for 'selected' pokemon
+        if (curr_node->curr_pokemon_selected == TRUE) {
+            printf("--> ");
+        } else {
+            printf("    ");
+        }
+        // reveal pokemon details if pokemon is 'found'
+        if (curr_node->pokemon_found == TRUE) {
+            printf("#%03d: %s", pokemonId, pokemonName); 
+        // print the hidden version of the pokemon        
+        } else {
+            printf("#%03d: ", pokemonId);
+            hidden_pokemon_name(pokemonName);    
+        }
+        printf("\n");
+        // continue printing other pokenodes
+        if (curr_node->next != NULL) {
+            curr_node = curr_node->next;
+        } else {
+            return;            
+        }        
+    }  
 }     
-    
 
 ////////////////////////////////////////////////////////////////////////
 //                         Stage 2 Functions                          //
