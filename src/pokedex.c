@@ -70,11 +70,9 @@ struct pokenode *get_current_pokenode(Pokedex pokedex);
 // Add prototypes for any extra functions you create here.
 void add_to_end(Pokedex pokedex, struct pokenode *node);
 void hidden_pokemon_name(char *pokemonName);
-void remove_evolve_to(Pokedex pokedex, struct pokenode *curr_node,
-                                                                int pokemonId);
+void set_all_found(Pokedex pokedex);
+void bubble_sort(Pokedex pokedex);
 int type_is_none(const char *pokemonType2);
-int evolution_chain_check (struct pokenode *pokenode);
-int curr_pokemon_id(Pokedex pokedex);
 
 // You need to implement the following 20 functions.
 // In other words, replace the lines calling fprintf & exit with your code.
@@ -269,6 +267,7 @@ void print_pokemon(Pokedex pokedex) {
 
 // Function: makes next pokemon on the list the currently selected pokemon
 void next_pokemon(Pokedex pokedex) {
+    if (pokedex->head == NULL) { return; }
     struct pokenode *curr_node = get_current_pokenode(pokedex);
     if (curr_node->next != NULL) {
         curr_node->curr_pokemon_selected = FALSE;
@@ -278,6 +277,7 @@ void next_pokemon(Pokedex pokedex) {
 
 // Function : makes previous pokemon on the list the currently selected pokemon
 void prev_pokemon(Pokedex pokedex) {
+    if (pokedex->head == NULL) { return; }
     struct pokenode *curr_node = get_current_pokenode(pokedex);
     if (curr_node->prev != NULL) {
         curr_node->curr_pokemon_selected = FALSE;
@@ -288,6 +288,7 @@ void prev_pokemon(Pokedex pokedex) {
 // Function: takes input as pokemon id and makes that pokemon current selected
 //           pokemon
 void change_current_pokemon(Pokedex pokedex, int id) {
+    if (pokedex->head == NULL) { return; }
     struct pokenode *curr_node = pokedex->head;
     struct pokenode *prev_pokemon_selected = get_current_pokenode(pokedex);    
     while (curr_node != NULL) {
@@ -303,15 +304,11 @@ void change_current_pokemon(Pokedex pokedex, int id) {
     
 // Function: removes current selected pokemon from list
 void remove_pokemon(Pokedex pokedex) {
+    if (pokedex->head == NULL) { return; }
     struct pokenode *curr_node = get_current_pokenode(pokedex);  
     struct pokenode *curr_node_prev = curr_node->prev;
     struct pokenode *curr_node_next = curr_node->next;
 
-    // checks and removes elvolve_to data for any pokemon which evolves to 
-    // current pokemon that will be deleted  
-    // int curr_id = curr_pokemon_id(pokedex); 
-    // remove_evolve_to(pokedex, curr_node, curr_id);
-    
     // if deleting the only pokemon in pokedex
     if (curr_node == pokedex->head && curr_node == pokedex->tail) {
         pokedex->head = NULL;
@@ -481,155 +478,40 @@ int get_next_evolution(Pokedex pokedex) {
 //                         Stage 5 Functions                          //
 ////////////////////////////////////////////////////////////////////////
 
-// STAGE FIVE IMCOMPLETE *
-
+// Function: Copy all the found pokemon with given type to a new pokedex
 Pokedex get_pokemon_of_type(Pokedex pokedex, pokemon_type type) {
-     
-    Pokedex type_pokedex = new_pokedex();
-    assert(type_pokedex != NULL);
-    return type_pokedex;
-    
-    /*
     struct pokenode *curr_node = pokedex->head;
-
+    Pokedex type_pokedex = new_pokedex();
     while(curr_node != NULL) {
-    
-        pokemon_type pokemon_Type_1 = pokemon_first_type(curr_node->pokemon);
-
-        pokemon_type pokemon_Type_2 = pokemon_second_type(curr_node->pokemon);
-    
-           
-        if (pokemon_Type_1 == type || pokemon_Type_2 == type) {
-                
-            Pokemon cloned_pokemon = clone_pokemon(curr_node->pokemon);
-            assert(cloned_pokemon != NULL);
-            add_pokemon(type_pokedex, cloned_pokemon);
-                
-            
-            while (curr_type_node != NULL) {
-                curr_type_node->pokemon_found = TRUE;
-                curr_type_node = curr_type_node->next;
+        if (curr_node->pokemon_found == TRUE) {
+            pokemon_type pokemon_type_1 = pokemon_first_type(curr_node->pokemon);
+            pokemon_type pokemon_type_2 = pokemon_second_type(curr_node->pokemon);
+            if (pokemon_type_1 == type || pokemon_type_2 == type) {
+                Pokemon pokemon_copy = clone_pokemon(curr_node->pokemon);
+                add_pokemon(type_pokedex, pokemon_copy);
             }
-
-          
-        
-            curr_type_node = type_pokedex->head;
-            while (curr_type_node != NULL) {
-                curr_type_node->evolve_to = NULL;
-                curr_type_node = curr_type_node->next;
-            }
-
-                      
-                
         }
-            
-        if (curr_node->next != NULL) {
-            
-            curr_node = curr_node->next;
-            
-        } else {
-          
-            break;
-            
-        }
-   
-   
+        curr_node = curr_node->next;
     }
-    
-    //return type_pokedex;
-    */
+    set_all_found(type_pokedex);
+    return type_pokedex;
 
 }
 
-
-
+// Function: Copy all the found pokemon to a new pokedex and sorts them by pokemon ID
 Pokedex get_found_pokemon(Pokedex pokedex) {
-// comment: *still in progress* functioning however have not implements the 
-// ascending order details correctly
-
-    Pokedex found_pokedex = new_pokedex();
-    assert(found_pokedex != NULL);
-    
     struct pokenode *curr_node = pokedex->head;
-    
+    Pokedex found_pokedex = new_pokedex();
     while(curr_node != NULL) {
-    
         if (curr_node->pokemon_found == TRUE) {
-                
-            Pokemon cloned_pokemon = clone_pokemon(curr_node->pokemon);
-            assert(cloned_pokemon != NULL);
-            add_pokemon(found_pokedex, cloned_pokemon);
-                
-            struct pokenode *curr_found_node = found_pokedex->head;
-            while (curr_found_node != NULL) {
-                curr_found_node->pokemon_found = TRUE;
-                curr_found_node->evolve_to = NULL;
-                curr_found_node = curr_found_node->next;
-            }
-            
-         
-         /* ascending order detail ///////////////////////////
-         // trying to get found_pokedex into ascening order //
-         
-            curr_found_node = found_pokedex->head;
-            
-            while (curr_found_node != NULL) {
-            
-           
-                int pokemonId = pokemon_id(curr_node->pokemon);
-                
-                if (curr_found_node->next != NULL) {
-                
-                    int pokemonIdNext = pokemon_id(curr_node->next->pokemon);
-                    
-                    if (pokemonId > pokemonIdNext) {
-                    
-                        struct pokenode *temp = found_pokedex->head;
-                        
-                        temp = curr_found_node->next;
-                        curr_found_node->next = curr_found_node;
-                        curr_found_node = temp;
-                        //free(temp);
-                        printf("here\n");
-                        
-                    } else {
-                    
-                        break;
-                        
-                    }
-                           
-                    curr_found_node = curr_found_node->next;
-                        
-                } else {
-                
-                    break;
-                    
-                }   
-            
-                
-            }
-            
-            *////////////////////////////////////////////////////   
-                
+                Pokemon pokemon_copy = clone_pokemon(curr_node->pokemon);
+                add_pokemon(found_pokedex, pokemon_copy);
         }
-         
-            
-        if (curr_node->next != NULL) {
-            
-            curr_node = curr_node->next;
-            
-        } else {
-          
-            break;
-            
-        }
-   
-   
+        curr_node = curr_node->next;
     }
-    
+    set_all_found(found_pokedex);
+    bubble_sort(found_pokedex);
     return found_pokedex;
-    
-
 }
 
 Pokedex search_pokemon(Pokedex pokedex, char *text) {
@@ -646,114 +528,79 @@ Pokedex search_pokemon(Pokedex pokedex, char *text) {
 
 // Function: finds length of string and prints '*' according to string length
 void hidden_pokemon_name(char *pokemonName) {
-
-    int pokemon_name_length = 0;
-            
+    int pokemon_name_length = 0;     
     while (pokemonName[pokemon_name_length] != '\0') {
         pokemon_name_length++;
-        
     }
-            
     for (int i = 0; i < pokemon_name_length; i++) {
         printf("*");
     }
- 
- 
-    
 }
 
 // Function: checks if type is none and returns true or false
 int type_is_none(const char *pokemonType2) {
-
     if (pokemonType2[0] == 'N' &&
         pokemonType2[1] == 'o' &&
         pokemonType2[2] == 'n' &&
         pokemonType2[3] == 'e') {
-        
         return TRUE;
-        
     }
-    
     return FALSE;
- 
- 
-    
 }
 
-// Function: iterates though pokedex and if there is a pokemon that evolves to
-//           input parameter pokemonId, remove that info.
-void remove_evolve_to(Pokedex pokedex, struct pokenode *curr_node, 
-                                                        int pokemonId) {
-
-    struct pokenode *counter_node = pokedex->head;
-    
-    while (counter_node != NULL) {
-        
-        if (counter_node->evolve_to != NULL) {
-    
-            int counter_pokemonId = pokemon_id
-                (counter_node->evolve_to->pokemon);
-        
-            if (counter_pokemonId == pokemonId) {
-            
-                counter_node->evolve_to = NULL;
-                // printf("counter_node->evolve_to now equals NULL\n"); - test
-                
-            }
-             
-        }    
-    
-        counter_node = counter_node->next;
-        
-    }
-    
-    
-    
-}
-
-// Function: returns the id of the current selected pokemon
-int curr_pokemon_id(Pokedex pokedex) {
-    
-    
+// Function: sets all pokemon in a given pokedex to found
+void set_all_found(Pokedex pokedex) {
     struct pokenode *curr_node = pokedex->head;
-    
-    while (curr_node != NULL) {
-    
-        int pokemonId = pokemon_id(curr_node->pokemon);
-    
-        if (curr_node->curr_pokemon_selected == TRUE) {
-        
-            return pokemonId;
-        }
-        
+    while(curr_node != NULL) {
+        curr_node->pokemon_found = TRUE;
         curr_node = curr_node->next;
-        
     }
-    
-    return 0;
-    
+}
+
+// Function: sort pokedex list in ascending order via bubble sort
+void bubble_sort(Pokedex pokedex) {
+    struct pokenode *curr_node = pokedex->head;
+    if (curr_node == NULL) {
+        return;
+    }
+    // if there is one pokemon to swap
+    if (curr_node->next == NULL) {
+        return;
+    }
+
+    // if there are more than one pokemons to swap
+    // sort pokedex by id using bubblesort
+    int curr_id;
+    int next_id;
+    int i = 0;
+    while(i < count_total_pokemon(pokedex)) {
+        while(curr_node->next != NULL) {
+            curr_id = pokemon_id(curr_node->pokemon);
+            next_id = pokemon_id(curr_node->next->pokemon);
+
+            if (curr_id > next_id) {
+                // swap pokemon
+                Pokemon swap_pokemon = curr_node->next->pokemon;
+                curr_node->next->pokemon = curr_node->pokemon;
+                curr_node->pokemon = swap_pokemon;
+            }
+            curr_node = curr_node->next;
+
+        }
+        i++;
+        curr_node = pokedex->head;
+    }
 }
 
 // Function: return the amount of found pokemon in pokedex
-int count_found_pokemon(Pokedex pokedex) {
-    
+int count_found_pokemon(Pokedex pokedex) { 
     struct pokenode *curr_node = pokedex->head;
-    
     int found_pokemon_count = 0;
-    
     while (curr_node != NULL) {
-        
         if (curr_node->pokemon_found == TRUE) {
-        
             found_pokemon_count++;
-        
         }
         curr_node = curr_node->next;
-        
     }
-    
     return found_pokemon_count;
-  
-  
-    
 }
