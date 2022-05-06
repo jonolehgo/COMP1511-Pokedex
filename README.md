@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://example.com/">
-    <img src="https://via.placeholder.com/72" alt="Logo" width=72 height=72>
+    <img src="https://static.wikia.nocookie.net/pokemontheherosrise/images/b/b7/Pok%C3%A9dex-logo.png/revision/latest?cb=20200820224717" alt="Logo" width=72 height=72>
   </a>
 
   <h3 align="center">Logo</h3>
