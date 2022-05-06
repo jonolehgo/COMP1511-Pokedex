@@ -142,13 +142,17 @@ Output:
 ```
 </br>
 
-**Example 2: Set pokemon to found** <br/><br/>
+**Example 4: Detail currently selected Pokemon** <br/><br/>
 Input:
 ```
-f --> p
+d
 ```
 Output:
 ```
---> #001: Bulbasaur
+Id: 001
+Name: Bulbasaur
+Height: 0.7m
+Weight: 6.9kg
+Type: Poison Grass
 ```
 </br>
