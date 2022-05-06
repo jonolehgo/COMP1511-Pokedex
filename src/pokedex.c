@@ -11,11 +11,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <assert.h>
 
 
 // Add any extra #includes your code needs here.
-#include <string.h>
 // But note you are not permitted to use functions from string.h
 // so do not #include <string.h>
 
@@ -73,6 +73,7 @@ void hidden_pokemon_name(char *pokemonName);
 void set_all_found(Pokedex pokedex);
 void bubble_sort(Pokedex pokedex);
 int type_is_none(const char *pokemonType2);
+bool string_match(char *name, char *text);
 
 // You need to implement the following 20 functions.
 // In other words, replace the lines calling fprintf & exit with your code.
@@ -515,11 +516,18 @@ Pokedex get_found_pokemon(Pokedex pokedex) {
 }
 
 Pokedex search_pokemon(Pokedex pokedex, char *text) {
-    fprintf(stderr, "exiting as STAGE 5 search_pokemon not completed\n");
-    exit(1);
-    
-    
-    
+    struct pokenode *curr_node = pokedex->head;
+    Pokedex search_pokedex = new_pokedex();
+    while(curr_node != NULL) {
+        char *name = pokemon_name(curr_node->pokemon);
+        if (curr_node->pokemon_found == TRUE && string_match(name, text)) {
+            Pokemon pokemon_copy = clone_pokemon(curr_node->pokemon);
+            add_pokemon(search_pokedex, pokemon_copy);
+        }
+        curr_node = curr_node->next;
+    }
+    set_all_found(search_pokedex);
+    return search_pokedex;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -603,4 +611,41 @@ int count_found_pokemon(Pokedex pokedex) {
         curr_node = curr_node->next;
     }
     return found_pokemon_count;
+}
+
+// Function: checks if a string is within a pokemons name
+bool string_match(char *name, char *text) {
+    int text_length = 0; 
+    int name_length = 0;    
+    while (text[text_length] != '\0') {
+        text_length++;
+    }
+    while (name[name_length] != '\0') {
+        name_length++;
+    }
+    if (text_length > name_length) {
+        return FALSE;
+    }
+    int i = 0;
+    int x = 0;
+    char n_ch;
+    char t_ch;
+    while (i < name_length) {
+        n_ch = name[i];
+        t_ch = text[x];
+        // convert to lowercase
+        if (t_ch >= 'A' && t_ch <= 'Z') {t_ch = t_ch + 32;}
+        if (n_ch >= 'A' && n_ch <= 'Z') {n_ch = n_ch + 32;}
+
+        if (t_ch == n_ch) {
+            x++;
+        } else {
+            x = 0;
+        }
+        if (x == text_length) {
+            return TRUE;
+        }
+        i++;
+    }
+    return FALSE;
 }

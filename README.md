@@ -36,6 +36,14 @@ Enter command: ?
     Add an evolution from Pokemon A to Pokemon B
   s
     Show evolutions of the currently selected Pokemon
+  n
+    Show next evolution of current selected Pokemon
+  F
+     Create a new Pokedex containing Pokemon that have previously been found
+  S [string]
+     Create a new Pokedex containing Pokemon that have the specified string in their name
+  T [type]
+     Create a new Pokedex containing Pokemon that have the specified type
   q
     Quit
   ?
