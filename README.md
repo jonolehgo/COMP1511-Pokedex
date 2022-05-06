@@ -1,6 +1,78 @@
-## How to compile and run
-Compile program: gcc -o pokedex main.c pokemon.c pokedex.c -l winmm <br/>
-Run program: ./pokedex
+<p align="center">
+  <a href="https://example.com/">
+    <img src="https://via.placeholder.com/72" alt="Logo" width=72 height=72>
+  </a>
+
+  <h3 align="center">Logo</h3>
+
+  <p align="center">
+    A Pokedex in C
+    <br>
+    <a href="https://reponame/issues/new?template=bug.md">Report bug</a>
+    ·
+    <a href="https://reponame/issues/new?template=feature.md&labels=feature">Request feature</a>
+  </p>
+</p>
+
+
+## Table of contents
+
+- [How to compile & run](#how-to-compile-&-run)
+- [Status](#status)
+- [Stages](#stages)
+- [Creators](#creators)
+- [Thanks](#thanks)
+- [Usage](#usage)
+
+
+## How to compile & run
+
+- Compile program: gcc -o pokedex main.c pokemon.c pokedex.c -l winmm <br/>
+- Run program: ./pokedex
+
+*note when compiling with -l winmm uses windows dynamic link library to enable BGM music whilst application is running
+
+## Status
+
+Pokedex stages 5/5 completed.
+
+## Stages
+
+```
+Stage1/
+  ├── (a) Add a pokemon 
+  ├── (g) Get currently selected pokemon
+  ├── (d) Display details of selected pokemon
+  ├── (f) Set currently selected pokemon as found 
+  └── (p) Print all pokemon in pokedex
+Stage2/
+  ├── (>) Move cursor to next pokemon on right
+  ├── (<) Move cursor to previous pokemon on left
+  ├── (m) Move cursor via input pokemon id
+  ├── (r) Remove current pokemon from list
+  └── (<) Move cursor to previous pokemon on left
+Stage3/
+  ├── (x) Explore for new pokemon
+  └── (c) Find the total amount of pokemon
+Stage4/
+  ├── (e) Add evolution details of a pokemon
+  ├── (s) Show evolution details of a currently selected pokemon
+  └── (n) Show evolution details of a next selected pokemon
+Stage5/
+  ├── (T) Create a new pokedex containing only pokemon of a specific Type
+  ├── (F) Create a new pokedex containing only pokemon which has been found
+  └── (S) Create a new pokedex containig only pokemon from a search query
+```
+
+## Creators
+
+**Jonathan Tea**
+
+- <https://github.com/jonolehgo>
+
+## Thanks
+
+Project COMP1511 by The University of New South Wales.
 
 ## Usage
 ```
@@ -49,6 +121,12 @@ Enter command: ?
   ?
     Show help
 ``` 
-## Example
-Enter command: a 1 Bulbasaur 0.7 6.9 poison grass <br/>
+# Example 1: Adding Pokemon
+Input:
+```
+a 1 Bulbasaur 0.7 6.9 poison grass <br/>
+```
+Output:
+```
 Added Bulbasaur to the Pokedex!
+```
