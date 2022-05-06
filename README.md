@@ -142,6 +142,17 @@ Output:
 ```
 </br>
 
+**Example 3: Set pokemon to found** <br/><br/>
+Input:
+```
+f then p
+```
+Output:
+```
+--> #001: Bulbasaur
+```
+</br>
+
 **Example 4: Detail currently selected Pokemon** <br/><br/>
 Input:
 ```
