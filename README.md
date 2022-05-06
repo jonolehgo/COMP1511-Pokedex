@@ -27,10 +27,10 @@
 
 ## How to compile & run
 
-- Compile program: gcc -o pokedex main.c pokemon.c pokedex.c -l winmm <br/>
-- Run program: ./pokedex
+Compile program: gcc -o pokedex main.c pokemon.c pokedex.c -l winmm <br/>
+Run program: ./pokedex
 
-*note when compiling with -l winmm uses windows dynamic link library to enable BGM music whilst application is running
+Note: Compiling with '-l winmm' uses windows dynamic link library to enable BGM music whilst application is running.
 
 ## Status
 
@@ -72,7 +72,7 @@ Stage5/
 
 ## Thanks
 
-Project COMP1511 by The University of New South Wales.
+COMP1511 Project in asscociation with The University of New South Wales.
 
 ## Usage
 ```
@@ -121,12 +121,23 @@ Enter command: ?
   ?
     Show help
 ``` 
-# Example 1: Adding Pokemon
+**Example 1: Adding Pokemon**
 Input:
 ```
-a 1 Bulbasaur 0.7 6.9 poison grass <br/>
+a 1 Bulbasaur 0.7 6.9 poison grass
 ```
 Output:
 ```
 Added Bulbasaur to the Pokedex!
 ```
+
+**Example 2: Printing Pokedex**
+Input:
+```
+p
+```
+Output:
+```
+--> #001: *********
+```
+
