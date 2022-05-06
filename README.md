@@ -129,6 +129,7 @@ Output:
 ```
 Added Bulbasaur to the Pokedex!
 ```
+</br>
 
 **Example 2: Printing Pokedex** <br/><br/>
 Input:
@@ -139,3 +140,15 @@ Output:
 ```
 --> #001: *********
 ```
+</br>
+
+**Example 2: Set pokemon to found** <br/><br/>
+Input:
+```
+f --> p
+```
+Output:
+```
+--> #001: Bulbasaur
+```
+</br>
