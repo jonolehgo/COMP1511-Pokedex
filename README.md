@@ -120,7 +120,7 @@ Enter command: ?
   ?
     Show help
 ``` 
-**Example 1: Adding Pokemon** <br/>
+**Example 1: Adding Pokemon** <br/><br/>
 Input:
 ```
 a 1 Bulbasaur 0.7 6.9 poison grass
@@ -129,8 +129,8 @@ Output:
 ```
 Added Bulbasaur to the Pokedex!
 ```
-
-**Example 2: Printing Pokedex** <br/>
+<br/>
+**Example 2: Printing Pokedex** <br/><br/>
 Input:
 ```
 p
@@ -139,4 +139,5 @@ Output:
 ```
 --> #001: *********
 ```
+<br/>
 
