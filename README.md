@@ -3,10 +3,9 @@
     <img src="https://static.wikia.nocookie.net/pokemontheherosrise/images/b/b7/Pok%C3%A9dex-logo.png/revision/latest?cb=20200820224717" alt="Logo" width=72 height=72>
   </a>
 
-  <h3 align="center">Logo</h3>
+  <h3 align="center">A Pokedex in C</h3>
 
   <p align="center">
-    A Pokedex in C
     <br>
     <a href="https://reponame/issues/new?template=bug.md">Report bug</a>
     ·
